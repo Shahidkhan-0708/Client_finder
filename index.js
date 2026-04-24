@@ -2,6 +2,7 @@ require("dotenv").config();
 const express=require("express");
 const port=3000;
 const app=express();
+
 const {connectMongoose}=require("./connections/m");
 
 //routes
@@ -10,7 +11,8 @@ const AnalyzeStatic=require("./routes/analyze");
 
 
 
-
+const cors = require('cors');
+app.use(cors());
 connectMongoose(process.env.MONGO_URL);
 app.use(express.json())
 app.use(express.urlencoded({extended:true}));
