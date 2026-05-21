@@ -2,7 +2,7 @@
 
 AI-powered B2B lead discovery platform that helps freelancers, agencies, and sales teams identify businesses with weak digital presence.
 
-The platform fetches real-world business data from OpenStreetMap, detects missing digital information, calculates opportunity scores, and generates AI-powered outreach angles.
+
 
 ---
 
