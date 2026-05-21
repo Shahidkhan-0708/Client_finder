@@ -3,9 +3,10 @@ const express=require("express");
 const app=express();
 async function connectMongoose(url){
     try{
+
     mongoose.connect(process.env.MONGO_URI)
       .then(() => {
-    console.log("MongoDB connected");
+    console.log("MongoDB connected ");
     app.listen(5000, () => console.log("Server running on port 5000"));
   })
     }
