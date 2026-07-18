@@ -1,4 +1,6 @@
 const {Groq}=require("groq-sdk");
+const asyncHandler = require("../utils/asyncHandler");
+const { sendSuccess } = require("../utils/apiResponse");
 const groq=new Groq({apiKey: process.env.GROQ_API_KEY});
 
 function detectGaps(business){
@@ -10,15 +12,17 @@ function detectGaps(business){
     return gaps;
 
 }
-async function analyzeGaps(req,res){
-    try{
+const analyzeGaps = asyncHandler(async (req,res) => {
         const {name,phone,website,email}=req.body;
-        if(!name && !phone && !website && !email){
-         return res.status(400).json({err:"No business data provided"})
-        }
         const gaps=detectGaps({name,phone,website,email});
     if(gaps.length===0){
-        return res.json({gaps:[],pitch_angle:"This Business has a complete Presence .",priority:"low",score:100})
+        return sendSuccess(res, 200, "Business analysis completed", {
+            gaps:[],
+            pitch_angle:"This Business has a complete Presence .",
+            pitchAngle:"This Business has a complete Presence .",
+            priority:"low",
+            score:100
+        })
     }
  
     const prompt=`You are a B2B sales assistant identify digital marketing opportunities
@@ -45,13 +49,10 @@ const result=await groq.chat.completions.create({
 const rawText=result.choices[0].message.content;
 const cleaned=rawText.replace(/```json|```/g, "").trim();
 const parsed=JSON.parse(cleaned);
-return res.json(parsed);
-    }catch(err){
-        console.log("error aya hai")
-        console.error("analyze error: ",err.message);
-        return res.status(500).json({error:"Analysis Failed",details:err.message});
+return sendSuccess(res, 200, "Business analysis completed", {
+    ...parsed,
+    pitchAngle: parsed.pitch_angle,
+});
+});
 
-    }
-
-}
 module.exports={analyzeGaps};

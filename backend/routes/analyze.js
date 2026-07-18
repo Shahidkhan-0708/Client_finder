@@ -1,5 +1,7 @@
 const express=require("express");
 const router=express.Router();
 const {analyzeGaps}=require("../controllers/analyze")
-router.post("/",analyzeGaps);
+const { requireAnyBusinessField } = require("../validators/analyzeValidator");
+
+router.post("/", requireAnyBusinessField, analyzeGaps);
 module.exports=router;

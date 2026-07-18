@@ -1,22 +1,23 @@
-const {fetchFromOverPass }=require("../overpass/api")
-const Search=require("../models/s")
-async function handleSearch(req,res){
-    try{
-const {city,type}=req.query;
-if(!city||!type){
-    return res.status(400).json({err:"City and type required"})
-}
- await Search.create({
-   city,businessType:type
-})
-const businesses=await fetchFromOverPass({city,businessType:type})
-return res.json({businesses});
-}
-catch(err){
-    console.error("Search error:", err.message);
-    return res.status(500).json({ error: "Search failed", details: err.message });
-}
-}
+const { fetchFromOverPass } = require("../overpass/api");
+const Search = require("../models/s");
+const asyncHandler = require("../utils/asyncHandler");
+const { sendSuccess } = require("../utils/apiResponse");
+
+const handleSearch = asyncHandler(async (req, res) => {
+  const { city, type } = req.query;
+
+  await Search.create({
+    city,
+    businessType: type,
+  });
+
+  const businesses = await fetchFromOverPass({ city, businessType: type });
+
+  return sendSuccess(res, 200, "Businesses fetched successfully", {
+    businesses,
+  });
+});
+
 module.exports={
     handleSearch,
 }
